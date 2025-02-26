@@ -1,5 +1,7 @@
-from . import post_controller
+from .post_controller import post
+from .auth_controller import auth
 
 blueprints = [
-	post_controller.post_bp
+	post,
+	auth
 ]

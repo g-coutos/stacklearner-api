@@ -1,10 +1,11 @@
 from app.models.post import Post
+from app.errors import ItemNotFoundError, ItemAlreadyExists
 from app.database import db_session
 
-def get_all_posts():
-	return Post.query.all()
+def get_all():
+	return Post.query.order_by(Post.created.desc()).all()
 
-def  create_new_post(data):
+def  create(data):
 	post = Post(
 		title=data['title'],
 		body=data['body']
@@ -14,3 +15,12 @@ def  create_new_post(data):
 	db_session.commit()
 
 	return post
+
+def delete(_id):
+	post = Post.query.get(_id)
+
+	if not post:
+		raise ItemNotFoundError(f'Post with id {_id} not found')
+
+	db_session.delete(post)
+	db_session.commit()
