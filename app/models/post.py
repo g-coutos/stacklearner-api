@@ -15,14 +15,14 @@ class Post(Base):
 	created = Column(DateTime)
 	updated = Column(DateTime)
 
-	def __init__(self, title, body):
+	def __init__(self, title, body, slug, updated, publish):
 		self._id = uuid.uuid4()
 		self.title = title
 		self.body = body
-		self.slug = self.title.replace(' ', '-').lower()
-		self.publish = dt.datetime.now()
+		self.slug = slug
 		self.created = dt.datetime.now()
-		self.updated = dt.datetime.now()
+		self.updated = updated
+		self.publish = publish
 
 	def __repr__(self):
 		return f'{self.title}'
