@@ -8,9 +8,9 @@ class Post(Base):
 	__tablename__ = 'posts'
 
 	_id = Column(UUID, primary_key=True)
-	title = Column(String(100), unique=True)
+	title = Column(String(100))
 	body = Column(String)
-	slug = Column(String(100), unique=True)
+	slug = Column(String(100))
 	publish = Column(DateTime)
 	created = Column(DateTime)
 	updated = Column(DateTime)

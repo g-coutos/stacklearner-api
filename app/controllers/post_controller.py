@@ -20,8 +20,7 @@ def list_posts():
 	
 		except ItemNotFoundError as e:
 			return jsonify({
-				'error': 'Something went wrong',
-				'message': str(e)
+				'error': str(e)
 			})
 	else:
 		posts = get_all()
@@ -38,9 +37,8 @@ def create_post():
 	
 	except ItemAlreadyExists as e:
 		return jsonify({
-			'error': 'Item with same title already exists',
-			'message': str(e)
-		}), 500
+			'error': str(e)
+		}), 409
 	
 @post.route('/', methods=['PUT'])
 def edit_post():
@@ -52,12 +50,13 @@ def edit_post():
 	
 	except ItemAlreadyExists as e:
 		return jsonify({
-			'error': 'Item with same title already exists',
-			'message': str(e)
-		}), 500
+			'error': str(e),
+		}), 409
 
-@post.route('/<string:_id>', methods=['DELETE'])
-def delete_post(_id):
+@post.route('/', methods=['DELETE'])
+def delete_post():
+	_id = request.args.get('_id')
+
 	try:
 		delete(_id)
 
@@ -65,8 +64,7 @@ def delete_post(_id):
 	
 	except ItemNotFoundError as e:
 		return jsonify({
-			'error': 'Item not found',
-			'message': str(e)
+			'error': str(e)
 		}), 404
 	
 
