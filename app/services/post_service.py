@@ -51,7 +51,7 @@ def create(data):
 	post = Post.query.filter_by(title=data['title']).first()
 
 	if post:
-		raise ItemAlreadyExists(f'Post with title "{data['title']}" already exists')
+		raise ItemAlreadyExists(f'Post with title "{data["title"]}" already exists')
 	
 	post = Post(
 		title=data['title'],
