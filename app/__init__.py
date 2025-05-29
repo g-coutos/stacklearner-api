@@ -14,7 +14,13 @@ def create_app():
 	app.config.from_object(config.Config)
 
 	Session(app)
-	CORS(app, origins=[os.getenv("WEB_HOST")], supports_credentials=True)
+	CORS(
+		app, 
+		origins=[os.getenv("WEB_HOST")], 
+		supports_credentials=True,
+		methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"]
+	)
 
 	database.init_db()
 	database.init_app(app)
