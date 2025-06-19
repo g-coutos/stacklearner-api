@@ -2,6 +2,8 @@ from app.models.post import Post
 from app.errors import PaginationValueError, ItemNotFoundError, ItemAlreadyExists
 from app.database import db_session
 
+from .tag_service import get_or_create
+
 import datetime as dt
 from math import ceil
 
@@ -47,6 +49,13 @@ def get_one(_id):
 	
 	return post
 
+def get_all_by_tag(tag):
+	posts = Post.query.filter(Post.tags.any(name=tag)).order_by(Post.created.desc()).all()
+
+	return {
+		'posts': posts,
+	}
+
 def create(data):
 	post = Post.query.filter_by(title=data['title']).first()
 
@@ -58,7 +67,8 @@ def create(data):
 		body=data['body'],
 		slug=data['title'].replace(' ', '-').lower(),
 		updated=dt.datetime.now(),
-		publish=dt.datetime.now()
+		publish=dt.datetime.now(),
+		tags=get_or_create(data['tags'])
 	)
 
 	db_session.add(post)
@@ -67,14 +77,12 @@ def create(data):
 	return post
 
 def edit(data):
-	post = Post.query.filter_by(title=data['title']).first()
-
 	Post.query.filter_by(_id=data['_id']).update(dict(
 		title=data['title'],
 		body=data['body'],
 		slug=data['title'].replace(' ', '-').lower(),
 		updated=dt.datetime.now(),
-		publish=dt.datetime.now()
+		publish=dt.datetime.now(),
 	))
 
 	db_session.commit()

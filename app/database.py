@@ -14,7 +14,7 @@ Base = declarative_base()
 Base.query = db_session.query_property()
 
 def init_db():
-	from app.models import post
+	from app.models import post, tag, post_tag
 	Base.metadata.create_all(bind=engine)
 
 def init_app(app: Flask):
