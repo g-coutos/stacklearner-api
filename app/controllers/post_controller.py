@@ -10,33 +10,39 @@ def handle_options():
 	
 @post.route('/', methods=['GET'], strict_slashes=False)
 def list_posts():
-	_id = request.args.get('_id')
 	page = request.args.get('page')
 
-	if _id:
-		try:
-			post = get_one(_id)
-
-			return jsonify(post.to_dict()), 200
-	
-		except ItemNotFoundError as e:
-			return jsonify({
-				'error': str(e)
-			}), 404
-	else:
-		try:
-			posts = get_all(page)
+	try:
+		posts = get_all(page)
 			
-			return jsonify({
-				'posts': [post.to_dict() for post in posts['posts']],
-				**{k: v for k, v in posts.items() if k != "posts"}
-			}), 200
+		return jsonify({
+			'posts': [post.to_dict() for post in posts['posts']],
+			**{k: v for k, v in posts.items() if k != "posts"}
+		}), 200
+			
+	except PaginationValueError as e:
+		return jsonify({
+			'error': str(e)
+		}), 400
 		
-			
-		except PaginationValueError as e:
-			return jsonify({
-				'error': str(e)
-			}), 400
+@post.route('/by-id', methods=['GET'], strict_slashes=False)
+def get_post_by_id():
+	_id = request.args.get('_id')
+
+	if not _id:
+		return jsonify({
+			'error': 'Missing _id parameter'
+		}), 400
+
+	try:
+		post = get_one(_id)
+
+		return jsonify(post.to_dict()), 200
+	
+	except ItemNotFoundError as e:
+		return jsonify({
+			'error': str(e)
+		}), 404
 
 @post.route('/', methods=['POST'], strict_slashes=False)
 def create_post():
